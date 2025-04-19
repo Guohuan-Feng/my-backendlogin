@@ -21,5 +21,7 @@ router.put('/update', authenticateToken, authController.updateProfile)
 
 router.post('/send-sms', authController.sendSMSVerification)
 router.post('/verify-sms', authController.verifySMSCode)
+router.post('/login-sms', authController.loginWithSMS)
+
 
 module.exports = router

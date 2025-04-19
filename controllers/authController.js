@@ -214,6 +214,41 @@ const updateProfile = async (req, res) => {
   }
 }
 
+const loginWithSMS = async (req, res) => {
+  const { phone, code } = req.body
+
+  try {
+    // Validate inputs
+    if (!phone || !code) {
+      return res.status(400).json({ error: 'Phone number and code are required' })
+    }
+
+    // Verify code from cache/map
+    const record = verificationCodes.get(phone)
+    if (!record || record.code !== code || Date.now() > record.expiresAt) {
+      return res.status(400).json({ error: 'Invalid or expired verification code' })
+    }
+
+    // Check if user exists
+    let user = await User.getUserByPhone(phone)
+    if (!user) {
+      user = await User.createUserByPhone({ phone }) // No password required
+    }
+
+    // Generate token
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' })
+
+    // Cleanup used code
+    verificationCodes.delete(phone)
+
+    res.json({ token })
+  } catch (err) {
+    console.error('Login via SMS failed:', err)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+
 module.exports = {
   register,
   login,
@@ -222,5 +257,6 @@ module.exports = {
   googleOAuthCallback,
   updateProfile,
   sendSMSVerification,
-  verifySMSCode
+  verifySMSCode,
+  loginWithSMS
 }
