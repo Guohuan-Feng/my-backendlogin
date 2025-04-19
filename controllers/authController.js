@@ -8,7 +8,7 @@ const { sendSMSCode, checkSMSCode } = require('../services/twilioService') // Im
 const JWT_SECRET = 'csi4999-node-secret'
 const GOOGLE_CLIENT_ID = '802652951111-6oah8b5iglq92vd3h7snd8346i06b1tf.apps.googleusercontent.com'
 const GOOGLE_CLIENT_SECRET = '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'
-const REDIRECT_URI = 'http://localhost:4000/api/auth/google/callback'
+const REDIRECT_URI = 'https://my-backendlogin.onrender.com/api/auth/google/callback'
 const VERIFICATION_CODE_EXPIRE_MINUTES = 5
 const verificationCodes = new Map()
 
