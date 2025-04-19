@@ -221,32 +221,32 @@ const updateProfile = async (req, res) => {
 }
 
 const loginWithSMS = async (req, res) => {
-  const { phoneNumber, code } = req.body
+  const { phone, code } = req.body
 
-  if (!phoneNumber || !code) {
+  if (!phone || !code) {
     return res.status(400).json({ error: 'Phone number and code are required.' })
   }
 
   try {
-    const result = await checkSMSCode(phoneNumber, code)
+    const result = await checkSMSCode(phone, code)
 
     if (result.status !== 'approved') {
       return res.status(400).json({ error: 'Invalid or expired verification code' })
     }
 
-    let user = await User.getUserByPhone(phoneNumber)
+    let user = await User.getUserByPhone(phone)
     if (!user) {
-      user = await User.createUser({ phone: phoneNumber, passwordHash: '' })
+      user = await User.createUser({ phone, passwordHash: '' })
     }
 
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' })
     res.json({ message: 'Login successful', token })
-
   } catch (err) {
     console.error('📲 loginWithSMS error:', err.message)
     res.status(500).json({ error: 'Login failed' })
   }
 }
+
 
 
 
