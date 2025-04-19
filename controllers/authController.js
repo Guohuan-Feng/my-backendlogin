@@ -156,8 +156,13 @@ const verifySMSCode = async (req, res) => {
   try {
     const result = await checkSMSCode(phone, code)
 
+    console.log("🔍 Twilio verification result:", result) // ✅ 加上这句看看 status
+
     if (result.status !== 'approved') {
-      return res.status(400).json({ error: 'Invalid or expired verification code' })
+      return res.status(400).json({
+        error: 'Invalid or expired verification code',
+        status: result.status
+      })
     }
 
     let user = await User.getUserByPhone(phone)
@@ -172,6 +177,7 @@ const verifySMSCode = async (req, res) => {
     res.status(500).json({ error: 'SMS verification failed' })
   }
 }
+
 
 const updateProfile = async (req, res) => {
   const {
