@@ -1,8 +1,9 @@
+require('dotenv').config()
 const twilio = require('twilio')
 
-const accountSid = 'ACd4f957e9d7af7bc2dba5b059df273de3'
-const authToken = 'ab1649deb6c2e3ab4b3e8fb1b79f2a22'
-const verifyServiceSid = 'VA3ee84906785ea8431566087c6001dc81'
+const accountSid = process.env.TWILIO_ACCOUNT_SID
+const authToken = process.env.TWILIO_AUTH_TOKEN
+const verifyServiceSid = process.env.TWILIO_SERVICE_SID
 
 const client = twilio(accountSid, authToken)
 
@@ -17,6 +18,9 @@ const checkSMSCode = async (phoneNumber, code) => {
     .verificationChecks
     .create({ to: phoneNumber, code })
 }
+
+console.log('🔐 TWILIO_AUTH_TOKEN:', process.env.TWILIO_AUTH_TOKEN)
+
 
 module.exports = {
   sendSMSCode,
