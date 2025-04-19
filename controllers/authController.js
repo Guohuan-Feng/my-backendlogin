@@ -226,7 +226,7 @@ const loginWithSMS = async (req, res) => {
     // Verify code from cache/map
     const record = verificationCodes.get(phone)
     if (!record || record.code !== code || Date.now() > record.expiresAt) {
-      return res.status(400).json({ error: 'Invalid or expired verification code' })
+      return res.status(400).json({ error: `Verification failed. Status: ${result.status}` })
     }
 
     // Check if user exists
