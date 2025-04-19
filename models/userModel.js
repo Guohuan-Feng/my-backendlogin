@@ -1,55 +1,44 @@
 const pool = require('../db')
 
+// Create user with email and password
 const createUser = async ({ email, passwordHash }) => {
-  const [result] = await pool.query(
-    `INSERT INTO users (email, password_hash) VALUES (?,?)`,
+  const result = await pool.query(
+    `INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING *`,
     [email, passwordHash]
   )
 
-  const [rows] = await pool.query(
-    `SELECT * FROM users WHERE id = ?`,
-    [result.insertId]
-  )
-
-  return rows[0]
+  return result.rows[0]
 }
 
-
+// Create user with phone number only
 const createUserByPhone = async ({ phone }) => {
-  const [result] = await pool.query(
-    `INSERT INTO users (phone) VALUES (?)`,
+  const result = await pool.query(
+    `INSERT INTO users (phone) VALUES ($1) RETURNING *`,
     [phone]
   )
 
-  const [rows] = await pool.query(
-    `SELECT * FROM users WHERE id = ?`,
-    [result.insertId]
-  )
-
-  return rows[0]
+  return result.rows[0]
 }
 
-
-
-// 通过邮箱获取用户
+// Get user by email
 const getUserByEmail = async (email) => {
-  const [rows] = await pool.query(
-    `SELECT * FROM users WHERE email = ?`,
+  const result = await pool.query(
+    `SELECT * FROM users WHERE email = $1`,
     [email]
   )
-  return rows[0]
+  return result.rows[0]
 }
 
+// Get user by phone number
 const getUserByPhone = async (phone) => {
-  const [rows] = await pool.query(
-    `SELECT * FROM users WHERE phone = ?`,
+  const result = await pool.query(
+    `SELECT * FROM users WHERE phone = $1`,
     [phone]
   )
-  return rows[0]
+  return result.rows[0]
 }
 
-
-// 更新用户信息（通过邮箱）
+// Update user profile by email
 const updateUserByEmail = async (
   email,
   {
@@ -65,19 +54,19 @@ const updateUserByEmail = async (
     postal_code
   }
 ) => {
-  const [result] = await pool.query(
+  const result = await pool.query(
     `UPDATE users SET
-      username = ?,
-      first_name = ?,
-      last_name = ?,
-      age = ?,
-      birthday = ?,
-      address = ?,
-      city = ?,
-      state = ?,
-      country = ?,
-      postal_code = ?
-     WHERE email = ?`,
+      username = $1,
+      first_name = $2,
+      last_name = $3,
+      age = $4,
+      birthday = $5,
+      address = $6,
+      city = $7,
+      state = $8,
+      country = $9,
+      postal_code = $10
+     WHERE email = $11`,
     [
       username,
       first_name,
@@ -93,7 +82,7 @@ const updateUserByEmail = async (
     ]
   )
 
-  return result.affectedRows > 0
+  return result.rowCount > 0
 }
 
 module.exports = {
