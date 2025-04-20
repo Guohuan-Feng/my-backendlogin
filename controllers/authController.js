@@ -52,7 +52,7 @@ const googleOAuthCallback = async (req, res) => {
     }
 
     const appToken = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' })
-    res.redirect(`http://localhost:3000/aac/?token=${appToken}`)
+    res.redirect(`https://guohuan4999.vercel.app/aac/?token=${appToken}`)
   } catch (err) {
     console.error(err)
     res.status(401).json({ error: 'Google OAuth failed' })
