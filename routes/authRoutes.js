@@ -9,7 +9,7 @@ const authenticateToken = require('../middleware/authMiddleware')
 // 注册 & 登录
 router.post('/register', authController.register)
 router.post('/login', authController.login)
-router.post('/send-sms-code', authController.sendVerificationCode)
+router.post('/send-email-code', authController.sendVerificationCode)
 
 // Google 登录
 router.get('/google/login', authController.googleOAuthRedirect)
