@@ -23,5 +23,8 @@ router.post('/send-sms', authController.sendSMSVerification)
 router.post('/verify-sms', authController.verifySMSCode)
 router.post('/login-sms', authController.loginWithSMS)
 
+// 获取用户信息
+router.get('/user/:email', authenticateToken, authController.getUserByEmail)
+
 
 module.exports = router

@@ -167,7 +167,7 @@ const verifySMSCode = async (req, res) => {
 
     let user = await User.getUserByPhone(phone)
     if (!user) {
-      user = await User.createUser({ phone, passwordHash: '' }) // No password initially
+      user = await User.createUserByPhone({ phone, passwordHash: '' }) // No password initially
     }
 
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' })
@@ -221,8 +221,6 @@ const updateProfile = async (req, res) => {
 }
 
 const loginWithSMS = async (req, res) => {
-  console.log("📥 loginWithSMS received body:", req.body)
-
   const { phone, code } = req.body
 
   if (!phone || !code) {
@@ -249,8 +247,28 @@ const loginWithSMS = async (req, res) => {
   }
 }
 
+const getUserByEmail = async (req, res) => {
+  try {
+    const { email } = req.params
 
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' })
+    }
 
+    const user = await User.getUserByEmail(email)
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    // Remove sensitive information
+    const { password_hash, ...userInfo } = user
+
+    res.status(200).json(userInfo)
+  } catch (err) {
+    console.error('Get user error:', err)
+    res.status(500).json({ error: 'Failed to get user information' })
+  }
+}
 
 module.exports = {
   register,
@@ -261,5 +279,6 @@ module.exports = {
   updateProfile,
   sendSMSVerification,
   verifySMSCode,
-  loginWithSMS
+  loginWithSMS,
+  getUserByEmail
 }
