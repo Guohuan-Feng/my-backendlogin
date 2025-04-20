@@ -221,6 +221,8 @@ const updateProfile = async (req, res) => {
 }
 
 const loginWithSMS = async (req, res) => {
+  console.log("📥 loginWithSMS received body:", req.body)
+
   const { phone, code } = req.body
 
   if (!phone || !code) {
